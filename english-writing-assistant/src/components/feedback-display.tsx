@@ -6,15 +6,15 @@ import { ProofreadResult, Correction, CorrectionType } from "@/lib/types";
 const typeStyles: Record<CorrectionType, { bg: string; text: string; label: string }> = {
   grammar: { bg: "bg-red-100", text: "text-red-700", label: "Grammar" },
   vocabulary: { bg: "bg-amber-100", text: "text-amber-700", label: "Vocabulary" },
-  "native-suggestion": { bg: "bg-blue-100", text: "text-blue-700", label: "Native" },
-  punctuation: { bg: "bg-green-100", text: "text-green-700", label: "Punctuation" },
+  "native-suggestion": { bg: "bg-purple-100", text: "text-purple-700", label: "Native" },
+  punctuation: { bg: "bg-orange-100", text: "text-orange-700", label: "Punctuation" },
 };
 
 const activeTypeStyles: Record<CorrectionType, { bg: string; text: string }> = {
   grammar: { bg: "bg-red-200", text: "text-red-800" },
   vocabulary: { bg: "bg-amber-200", text: "text-amber-800" },
-  "native-suggestion": { bg: "bg-blue-200", text: "text-blue-800" },
-  punctuation: { bg: "bg-green-200", text: "text-green-800" },
+  "native-suggestion": { bg: "bg-purple-200", text: "text-purple-800" },
+  punctuation: { bg: "bg-orange-200", text: "text-orange-800" },
 };
 
 function computeCharDiff(original: string, corrected: string) {
