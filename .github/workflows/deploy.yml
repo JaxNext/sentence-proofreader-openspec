@@ -16,6 +16,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: english-writing-assistant
     steps:
       - uses: actions/checkout@v4
 
@@ -27,6 +30,7 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+          cache-dependency-path: english-writing-assistant/pnpm-lock.yaml
 
       - run: pnpm install --frozen-lockfile
 
@@ -35,7 +39,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./out
+          path: english-writing-assistant/out
 
   deploy:
     needs: build
