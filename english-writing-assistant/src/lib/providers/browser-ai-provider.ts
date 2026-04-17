@@ -5,9 +5,14 @@ import { parseProofreadResponse } from "./prompt-utils";
 interface ProofreaderOptions {
   includeCorrectionTypes: boolean;
   expectedInputLanguages: string[];
+  monitor?: (m: { addListener: (event: string, callback: (e: { loaded: number }) => void) => void }) => void;
+}
+interface ProofreaderSession {
+  proofread: (text: string) => Promise<string>;
+  destroy: () => void;
 }
 interface ProofreaderInterface {
-  create: (options: ProofreaderOptions) => Promise<{ generate: (prompt: string) => Promise<string> }>;
+  create: (options: ProofreaderOptions) => Promise<ProofreaderSession>;
   availability: (options: ProofreaderOptions) => Promise<'available' | 'unavailable' | 'downloading' | 'downloadable'>;
 }
 const ERROR_TEMPLATE = "Browser built-in AI is not available. Please use a supported browser (e.g., Chrome 127+).";
