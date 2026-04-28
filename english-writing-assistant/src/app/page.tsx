@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import { Settings, Loader2, AlertCircle } from "lucide-react";
+import { Settings, Loader2, AlertCircle, SendHorizontal } from "lucide-react";
 import { ProviderConfig, ProofreadResult } from "@/lib/types";
 import { proofreadWithProvider, createProvider } from "@/lib/providers/provider-factory";
 import { loadProviderConfig } from "@/components/settings-panel";
@@ -150,7 +150,17 @@ export default function Home() {
             placeholder="Type your English sentences here..."
             className="w-full h-48 p-4 pb-12 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed text-base leading-relaxed"
           />
-          <VoiceInputBar disabled={isLoading} onTextChange={setText} />
+          <div className="absolute bottom-4 right-2 flex items-end gap-2">
+            <VoiceInputBar disabled={isLoading} onTextChange={setText} />
+            <button
+              onClick={handleSubmit}
+              disabled={isLoading || !text.trim()}
+              className="p-2 rounded-lg bg-green-100 text-green-600 hover:bg-green-200 hover:text-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              title="Proofread"
+            >
+              <SendHorizontal className="w-4 h-4" />
+            </button>
+          </div>
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-white/60 rounded-xl">
               <div className="flex items-center gap-2 text-blue-600">
