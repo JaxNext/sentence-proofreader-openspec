@@ -12,11 +12,9 @@ export interface ProofreadResult {
   corrections: Correction[];
 }
 
-export type ProviderType = "browser-ai" | "local" | "cloud";
+export type ProviderType = "browser-ai" | "local";
 
 export interface ProviderConfig {
   type: ProviderType;
   localEndpoint?: string;
-  cloudApiKey?: string;
-  cloudApiBaseUrl?: string;
 }

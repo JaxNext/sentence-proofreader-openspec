@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { X } from "lucide-react";
 import { ProviderConfig, ProviderType } from "@/lib/types";
 
 const STORAGE_KEY = "ewa-provider-config";
@@ -8,8 +9,6 @@ const STORAGE_KEY = "ewa-provider-config";
 const defaultConfig: ProviderConfig = {
   type: "browser-ai",
   localEndpoint: "http://localhost:1234",
-  cloudApiKey: "",
-  cloudApiBaseUrl: "https://api.openai.com/v1",
 };
 
 export function loadProviderConfig(): ProviderConfig {
@@ -66,9 +65,7 @@ export default function SettingsPanel({ config, onConfigChange, onClose }: Setti
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -106,17 +103,6 @@ export default function SettingsPanel({ config, onConfigChange, onClose }: Setti
                 />
                 <span className="text-gray-900">Local LLM</span>
               </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="provider"
-                  value="cloud"
-                  checked={config.type === "cloud"}
-                  onChange={() => handleTypeChange("cloud")}
-                  className="text-blue-600"
-                />
-                <span className="text-gray-900">Cloud API</span>
-              </label>
             </div>
           </div>
 
@@ -138,37 +124,7 @@ export default function SettingsPanel({ config, onConfigChange, onClose }: Setti
             </div>
           )}
 
-          {config.type === "cloud" && (
-            <>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  API Base URL
-                </label>
-                <input
-                  type="url"
-                  value={config.cloudApiBaseUrl || ""}
-                  onChange={(e) => handleFieldChange("cloudApiBaseUrl", e.target.value)}
-                  placeholder="https://api.openai.com/v1"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  API Key
-                </label>
-                <input
-                  type="password"
-                  value={config.cloudApiKey || ""}
-                  onChange={(e) => handleFieldChange("cloudApiKey", e.target.value)}
-                  placeholder="sk-..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-                <p className="text-xs text-gray-400 mt-1">
-                  Stored in your browser&apos;s localStorage
-                </p>
-              </div>
-            </>
-          )}
+
         </div>
 
         <button
