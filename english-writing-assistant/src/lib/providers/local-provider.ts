@@ -1,5 +1,5 @@
 import { ProofreadResult } from "../types";
-import { ProofreadProvider } from "./proofread-provider";
+import { ProofreadProvider, AvailabilityStatus } from "./proofread-provider";
 import { buildProofreadPrompt, parseProofreadResponse } from "./prompt-utils";
 
 export class LocalProvider implements ProofreadProvider {
@@ -7,6 +7,23 @@ export class LocalProvider implements ProofreadProvider {
 
   constructor(endpoint: string) {
     this.endpoint = endpoint;
+  }
+
+  async checkAvailability(): Promise<AvailabilityStatus> {
+    try {
+      const response = await fetch(`${this.endpoint}/v1/models`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        signal: AbortSignal.timeout(5000),
+      });
+
+      if (response.ok) {
+        return "available";
+      }
+      return "unavailable";
+    } catch {
+      return "unavailable";
+    }
   }
 
   async proofread(text: string): Promise<ProofreadResult> {

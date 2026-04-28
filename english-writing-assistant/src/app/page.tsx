@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
-import { Settings, Loader2 } from "lucide-react";
+import { useState, useRef, useCallback, useEffect } from "react";
+import { Settings, Loader2, AlertCircle } from "lucide-react";
 import { ProviderConfig, ProofreadResult } from "@/lib/types";
-import { proofreadWithProvider } from "@/lib/providers/provider-factory";
+import { proofreadWithProvider, createProvider } from "@/lib/providers/provider-factory";
 import { loadProviderConfig } from "@/components/settings-panel";
 import SettingsPanel from "@/components/settings-panel";
 import FeedbackDisplay from "@/components/feedback-display";
@@ -21,7 +21,51 @@ export default function Home() {
   });
   const [showSettings, setShowSettings] = useState(false);
   const [submittedText, setSubmittedText] = useState("");
+  const [availabilityWarning, setAvailabilityWarning] = useState<string | null>(null);
+  const [downloadProgress, setDownloadProgress] = useState<number | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const checkProviderAvailability = async () => {
+      const provider = createProvider(config);
+      try {
+        const status = await provider.checkAvailability();
+        if (status === "unavailable") {
+          if (config.type === "browser-ai") {
+            setAvailabilityWarning(
+              "Browser built-in AI is not available. Please check your settings and switch to an available option."
+            );
+          } else {
+            setAvailabilityWarning(
+              `Local LLM server is not running at ${config.localEndpoint}. Please check your settings and ensure the server is running.`
+            );
+          }
+        } else if (status === "downloading" || status === "downloadable") {
+          await provider.checkDownloadProgress?.((progress) => {
+            setDownloadProgress(Math.round(progress * 100));
+          });
+          setAvailabilityWarning(
+            "Browser built-in AI is being downloaded. Please wait for the download to complete."
+          );
+        } else {
+          setAvailabilityWarning(null);
+          setDownloadProgress(null);
+        }
+      } catch (err) {
+        if (config.type === "browser-ai") {
+          setAvailabilityWarning(
+            "Browser built-in AI is not available. Please check your settings and switch to an available option."
+          );
+        } else {
+          setAvailabilityWarning(
+            `Unable to connect to local LLM server at ${config.localEndpoint}. Please check your settings and ensure the server is running.`
+          );
+        }
+      }
+    };
+
+    checkProviderAvailability();
+  }, [config]);
 
   const handleSubmit = useCallback(async () => {
     if (!text.trim()) return;
@@ -65,6 +109,35 @@ export default function Home() {
             <Settings className="w-5 h-5" />
           </button>
         </div>
+
+        {availabilityWarning && (
+          <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="text-sm text-amber-800">{availabilityWarning}</p>
+              {downloadProgress !== null && (
+                <div className="mt-2">
+                  <div className="flex items-center justify-between text-xs text-amber-700 mb-1">
+                    <span>Downloading model...</span>
+                    <span>{downloadProgress}%</span>
+                  </div>
+                  <div className="w-full bg-amber-200 rounded-full h-2">
+                    <div
+                      className="bg-amber-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${downloadProgress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+              <button
+                onClick={() => setShowSettings(true)}
+                className="mt-2 text-sm font-medium text-amber-600 hover:text-amber-700 underline"
+              >
+                Open Settings
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="relative">
           <textarea

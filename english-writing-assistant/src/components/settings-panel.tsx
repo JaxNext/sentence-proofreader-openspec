@@ -123,16 +123,7 @@ export default function SettingsPanel({ config, onConfigChange, onClose }: Setti
               </p>
             </div>
           )}
-
-
         </div>
-
-        <button
-          onClick={onClose}
-          className="mt-6 w-full px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-        >
-          Done
-        </button>
       </div>
     </div>
   );

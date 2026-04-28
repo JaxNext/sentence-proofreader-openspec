@@ -16,7 +16,7 @@ export function createProvider(config: ProviderConfig): ProofreadProvider {
 
 export async function proofreadWithProvider(
   text: string,
-  config: ProviderConfig
+  config: ProviderConfig,
 ): Promise<ProofreadResult> {
   const provider = createProvider(config);
   return provider.proofread(text);
