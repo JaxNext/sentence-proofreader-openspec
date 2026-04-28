@@ -7,6 +7,7 @@ import { proofreadWithProvider, createProvider } from "@/lib/providers/provider-
 import { loadProviderConfig } from "@/components/settings-panel";
 import SettingsPanel from "@/components/settings-panel";
 import FeedbackDisplay from "@/components/feedback-display";
+import VoiceInputBar from "@/components/voice-input-bar";
 
 export default function Home() {
   const [text, setText] = useState("");
@@ -147,8 +148,9 @@ export default function Home() {
             onKeyDown={handleKeyDown}
             disabled={isLoading}
             placeholder="Type your English sentences here..."
-            className="w-full h-48 p-4 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed text-base leading-relaxed"
+            className="w-full h-48 p-4 pb-12 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed text-base leading-relaxed"
           />
+          <VoiceInputBar disabled={isLoading} onTextChange={setText} />
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-white/60 rounded-xl">
               <div className="flex items-center gap-2 text-blue-600">
