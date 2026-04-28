@@ -1,7 +1,7 @@
 import { ProviderConfig, ProofreadResult } from "../types";
 import { ProofreadProvider } from "./proofread-provider";
 import { BrowserAIProvider } from "./browser-ai-provider";
-import { LocalProvider } from "./local-provider";
+import { LocalProvider, getModels } from "./local-provider";
 
 export function createProvider(config: ProviderConfig): ProofreadProvider {
   switch (config.type) {
@@ -21,3 +21,6 @@ export async function proofreadWithProvider(
   const provider = createProvider(config);
   return provider.proofread(text);
 }
+
+export const STORAGE_KEY = "ewa-provider-config";
+export { getModels };

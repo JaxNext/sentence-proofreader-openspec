@@ -17,4 +17,5 @@ export type ProviderType = "browser-ai" | "local";
 export interface ProviderConfig {
   type: ProviderType;
   localEndpoint?: string;
+  model?: string;
 }

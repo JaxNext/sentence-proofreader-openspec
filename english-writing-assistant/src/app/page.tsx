@@ -34,11 +34,11 @@ export default function Home() {
         if (status === "unavailable") {
           if (config.type === "browser-ai") {
             setAvailabilityWarning(
-              "Browser built-in AI is not available. Please check your settings and switch to an available option."
+              "Browser AI unavailable. Switch to another provider in Settings."
             );
           } else {
             setAvailabilityWarning(
-              `Local LLM server is not running at ${config.localEndpoint}. Please check your settings and ensure the server is running.`
+              `Local LLM not running at ${config.localEndpoint}. Check Settings.`
             );
           }
         } else if (status === "downloading" || status === "downloadable") {
@@ -46,7 +46,7 @@ export default function Home() {
             setDownloadProgress(Math.round(progress * 100));
           });
           setAvailabilityWarning(
-            "Browser built-in AI is being downloaded. Please wait for the download to complete."
+            "Browser AI downloading. Please wait."
           );
         } else {
           setAvailabilityWarning(null);
@@ -55,11 +55,11 @@ export default function Home() {
       } catch (err) {
         if (config.type === "browser-ai") {
           setAvailabilityWarning(
-            "Browser built-in AI is not available. Please check your settings and switch to an available option."
+            "Browser AI unavailable. Switch to another provider in Settings."
           );
         } else {
           setAvailabilityWarning(
-            `Unable to connect to local LLM server at ${config.localEndpoint}. Please check your settings and ensure the server is running.`
+            `Cannot reach local LLM at ${config.localEndpoint}. Check Settings.`
           );
         }
       }
@@ -180,6 +180,7 @@ export default function Home() {
 
       {showSettings && (
         <SettingsPanel
+          warningMsg={availabilityWarning || undefined}
           config={config}
           onConfigChange={setConfig}
           onClose={() => setShowSettings(false)}

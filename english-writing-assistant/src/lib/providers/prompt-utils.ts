@@ -1,6 +1,6 @@
 import { ProofreadResult } from "../types";
 
-export function buildProofreadPrompt(text: string): string {
+export function buildProofreadPrompt(): string {
   return `You are an English writing assistant for non-native speakers. Proofread the following text and return a JSON object with this exact structure:
 
 {
@@ -24,9 +24,7 @@ Rules:
 - A correction can have multiple types
 - If no issues are found, return correctedInput equal to the original text and an empty corrections array
 - Return ONLY the JSON object, no other text
-
-Text to proofread:
-${text}`;
+`;
 }
 
 export function parseProofreadResponse(raw: string, originalText: string): ProofreadResult {
