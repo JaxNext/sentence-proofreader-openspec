@@ -5,7 +5,7 @@ import { parseProofreadResponse } from "./prompt-utils";
 interface ProofreaderOptions {
   includeCorrectionTypes: boolean;
   expectedInputLanguages: string[];
-  monitor?: (m: { addListener: (event: string, callback: (e: { loaded: number, total: number }) => void) => void }) => void;
+  monitor?: (m: { addEventListener: (event: string, callback: (e: { loaded: number, total: number }) => void) => void }) => void;
 }
 interface ProofreaderSession {
   proofread: (text: string) => Promise<string>;
@@ -29,12 +29,6 @@ export class BrowserAIProvider implements ProofreadProvider {
     }
     const Proofreader = (window as unknown as { Proofreader: ProofreaderInterface }).Proofreader;
     const availability = await Proofreader.availability(DEFAULT_OPTIONS);
-    if (availability === 'unavailable') {
-      throw new Error(ERROR_TEMPLATE);
-    }
-    if (['downloading', 'downloadable'].includes(availability)) {
-      await this.checkDownloadProgress();
-    }
     return availability;
   }
   async checkDownloadProgress (callback?: (progress: number) => void) {
@@ -43,7 +37,7 @@ export class BrowserAIProvider implements ProofreadProvider {
     const session = await Proofreader.create({
       ...DEFAULT_OPTIONS,
       monitor (m) {
-        m.addListener("downloadprogress", (e) => {
+        m.addEventListener("downloadprogress", (e) => {
           console.log('Browser built-in AI download progress:', e.loaded / e.total);
           callback?.(e.loaded / e.total);
         });

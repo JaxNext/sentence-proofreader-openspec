@@ -31,37 +31,39 @@ export default function Home() {
       const provider = createProvider(config);
       try {
         const status = await provider.checkAvailability();
-        if (status === "unavailable") {
-          if (config.type === "browser-ai") {
-            setAvailabilityWarning(
-              "Browser AI unavailable. Switch to another provider in Settings."
-            );
-          } else {
-            setAvailabilityWarning(
-              `Local LLM not running at ${config.localEndpoint}. Check Settings.`
-            );
-          }
-        } else if (status === "downloading" || status === "downloadable") {
-          await provider.checkDownloadProgress?.((progress) => {
-            setDownloadProgress(Math.round(progress * 100));
-          });
-          setAvailabilityWarning(
-            "Browser AI downloading. Please wait."
-          );
-        } else {
-          setAvailabilityWarning(null);
-          setDownloadProgress(null);
+        switch (config.type) {
+          case 'browser-ai':
+            if (status !== 'available') {
+              setAvailabilityWarning(`Browser built-in LLM status: ${status}`);
+            }
+            if (['downloading', 'downloadable'].includes(status)) {
+              provider.checkDownloadProgress?.((progress) => {
+                setDownloadProgress(Math.round(progress * 100));
+              });
+            } else {
+              setAvailabilityWarning(null)
+              setDownloadProgress(null)
+            }
+            break;
+          case 'local':
+            switch (status) {
+              case 'unavailable':
+                setAvailabilityWarning(`Local LLM not running at ${config.localEndpoint}. Check Settings.`);
+                break;
+              default:
+                setAvailabilityWarning(null);
+                setDownloadProgress(null);
+                break;
+            }
+            break;
+          default:
+            setAvailabilityWarning(null);
+            setDownloadProgress(null);
+            break;
         }
       } catch (err) {
-        if (config.type === "browser-ai") {
-          setAvailabilityWarning(
-            "Browser AI unavailable. Switch to another provider in Settings."
-          );
-        } else {
-          setAvailabilityWarning(
-            `Cannot reach local LLM at ${config.localEndpoint}. Check Settings.`
-          );
-        }
+        setAvailabilityWarning(err instanceof Error ? err.message : "An unexpected error occurred.");
+        setDownloadProgress(null);
       }
     };
 

@@ -53,8 +53,12 @@ export function parseProofreadResponse(raw: string, originalText: string): Proof
         typeof (c as Record<string, unknown>).correction === "string" &&
         typeof (c as Record<string, unknown>).startIndex === "number" &&
         typeof (c as Record<string, unknown>).endIndex === "number" &&
-        Array.isArray((c as Record<string, unknown>).types)
-    );
+        Array.isArray((c as Record<string, unknown>).types) ||
+        typeof (c as Record<string, unknown>).type === "string"
+    ).map((c: { types: string[], type?: string }) => ({
+      ...c,
+      types: Array.isArray(c.types) ? c.types : [c.type],
+    }));
 
     return {
       correctedInput: parsed.correctedInput,
